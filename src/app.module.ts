@@ -10,7 +10,7 @@ import { ChamaMembersModule } from './chama-members/chama-members.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.MONGODB_URI),
+    MongooseModule.forRoot(process.env.MONGODB_URI!),
     UsersModule,
     WalletsModule,
     TransactionsModule,
