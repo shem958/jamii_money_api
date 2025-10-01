@@ -6,6 +6,7 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { GoalsModule } from './goals/goals.module';
 import { ChamasModule } from './chamas/chamas.module';
 import { NudgesModule } from './nudges/nudges.module';
+import { ChamaMembersModule } from './chama-members/chama-members.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { NudgesModule } from './nudges/nudges.module';
     GoalsModule,
     ChamasModule,
     NudgesModule,
+    ChamaMembersModule,
   ],
 })
 export class AppModule { }
