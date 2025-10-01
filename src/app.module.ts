@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 import { UsersModule } from './users/users.module';
 import { WalletsModule } from './wallets/wallets.module';
 import { TransactionsModule } from './transactions/transactions.module';
@@ -10,7 +12,20 @@ import { ChamaMembersModule } from './chama-members/chama-members.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.MONGODB_URI!),
+    // Load .env into process.env
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+
+    // Use async config to inject Mongo URI
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+      }),
+    }),
+
     UsersModule,
     WalletsModule,
     TransactionsModule,
