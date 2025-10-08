@@ -4,13 +4,23 @@
     "json",
     "ts"
   ],
-  "rootDir": ".",
+  "rootDir": "../",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
+  "transformIgnorePatterns": [
+    "node_modules/(?!chalk)"
+  ],
   "moduleNameMapper": {
-    "^src/(.*)$": "<rootDir>/src/$1"
+    "#ansi-styles": "chalk/source/vendor/ansi-styles/index.js",
+    "#supports-color": "chalk/source/vendor/supports-color/index.js"
+  },
+  "globals": {
+    "ts-jest": {
+      "useESM": true,
+      "isolatedModules": true
+    }
   }
 }
