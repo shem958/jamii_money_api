@@ -9,6 +9,7 @@ import { GoalsModule } from './goals/goals.module';
 import { ChamasModule } from './chamas/chamas.module';
 import { NudgesModule } from './nudges/nudges.module';
 import { ChamaMembersModule } from './chama-members/chama-members.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ChamaMembersModule } from './chama-members/chama-members.module';
     ChamasModule,
     NudgesModule,
     ChamaMembersModule,
+    AuthModule,
   ],
 })
 export class AppModule { }

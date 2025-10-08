@@ -17,6 +17,9 @@ export class User extends Document {
 
     @Prop()
     payday: number; // salary date (e.g., 30)
+
+    @Prop({ default: 'user', enum: ['user', 'admin'] })
+    role: string; // 👈 Added this line
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
