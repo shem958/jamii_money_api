@@ -10,7 +10,7 @@ export enum NudgeType {
 @Schema({ timestamps: true })
 export class Nudge extends Document {
     @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-    userId: string;
+    userId: Types.ObjectId;
 
     @Prop({ required: true })
     message: string;

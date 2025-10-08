@@ -4,10 +4,10 @@ import { Document, Types } from 'mongoose';
 @Schema({ timestamps: true })
 export class Goal extends Document {
     @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-    userId: string;
+    userId: Types.ObjectId;
 
     @Prop({ required: true })
-    title: string; // e.g. "School Fees"
+    title: string; // e.g., "School Fees"
 
     @Prop({ required: true })
     target: number;

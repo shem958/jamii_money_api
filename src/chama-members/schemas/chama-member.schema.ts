@@ -4,10 +4,10 @@ import { Document, Types } from 'mongoose';
 @Schema({ timestamps: true })
 export class ChamaMember extends Document {
     @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-    userId: string;
+    userId: Types.ObjectId;
 
     @Prop({ type: Types.ObjectId, ref: 'Chama', required: true })
-    chamaId: string;
+    chamaId: Types.ObjectId;
 
     @Prop({ required: true })
     role: string; // admin / member
