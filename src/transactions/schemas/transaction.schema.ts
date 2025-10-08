@@ -4,13 +4,13 @@ import { Document, Types } from 'mongoose';
 @Schema({ timestamps: true })
 export class Transaction extends Document {
     @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-    userId: string;
+    userId: Types.ObjectId;
 
     @Prop({ required: true })
     amount: number;
 
     @Prop({ required: true })
-    category: string; // food, rent, transport, etc.
+    category: string; // food, rent, etc.
 
     @Prop({ required: true })
     type: string; // income / expense
