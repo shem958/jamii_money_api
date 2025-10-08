@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+// 🧩 Modules
 import { UsersModule } from './users/users.module';
 import { WalletsModule } from './wallets/wallets.module';
 import { TransactionsModule } from './transactions/transactions.module';
@@ -11,14 +12,17 @@ import { NudgesModule } from './nudges/nudges.module';
 import { ChamaMembersModule } from './chama-members/chama-members.module';
 import { AuthModule } from './auth/auth.module';
 
+// 🧠 Middleware
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
+
 @Module({
   imports: [
-    // Load .env into process.env
+    // Load environment variables globally
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // Use async config to inject Mongo URI
+    // Async MongoDB connection using ConfigService
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -27,6 +31,7 @@ import { AuthModule } from './auth/auth.module';
       }),
     }),
 
+    // Feature modules
     UsersModule,
     WalletsModule,
     TransactionsModule,
@@ -37,4 +42,9 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // Apply request logging middleware globally
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
