@@ -1,29 +1,35 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
 async function bootstrap() {
   dotenv.config();
-
   const app = await NestFactory.create(AppModule);
 
-  // ✅ Swagger Configuration
+  // Apply global prefix
+  app.setGlobalPrefix('api');
+
+  // Global response & exception handling
+  app.useGlobalFilters(new AllExceptionsFilter());
+  app.useGlobalInterceptors(new ResponseInterceptor());
+
+  // Swagger Setup
   const config = new DocumentBuilder()
     .setTitle('Jamii Money API')
-    .setDescription('API documentation for the Jamii Money backend (NestJS + MongoDB)')
+    .setDescription('API documentation for Jamii Money backend')
     .setVersion('1.0')
-    .addBearerAuth() // 👈 Adds JWT Authorization header
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
-
-  console.log(`🚀 Server running on http://localhost:${port}`);
-  console.log(`📘 Swagger Docs available at http://localhost:${port}/api/docs`);
+  await app.listen(3000);
+  console.log(`🚀 Server running on http://localhost:3000/api`);
+  console.log(`📘 Swagger Docs: http://localhost:3000/api/docs`);
 }
 
 bootstrap();
