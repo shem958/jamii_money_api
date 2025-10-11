@@ -9,6 +9,12 @@ async function bootstrap() {
   dotenv.config();
   const app = await NestFactory.create(AppModule);
 
+  // Enable CORS
+  app.enableCors({
+    origin: ['http://localhost:3000'],
+    credentials: true,
+  });
+
   // Apply global prefix
   app.setGlobalPrefix('api');
 
@@ -27,9 +33,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(3000);
-  console.log(`🚀 Server running on http://localhost:3000/api`);
-  console.log(`📘 Swagger Docs: http://localhost:3000/api/docs`);
+  await app.listen(5000);
+  console.log(`🚀 Server running on http://localhost:5000/api`);
+  console.log(`📘 Swagger Docs: http://localhost:5000/api/docs`);
 }
 
 bootstrap();
