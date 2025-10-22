@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+    Injectable,
+    UnauthorizedException,
+    ConflictException,
+    InternalServerErrorException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -15,39 +20,70 @@ export class AuthService {
     ) { }
 
     async register(registerDto: RegisterAuthDto) {
-        const { name, email, password } = registerDto;
+        try {
+            const { name, email, password, phone, payday } = registerDto;
 
-        const existingUser = await this.userModel.findOne({ email });
-        if (existingUser) throw new ConflictException('Email already registered');
+            // ✅ Check for existing user
+            const existingUser = await this.userModel.findOne({
+                $or: [{ email }, { phone }],
+            });
+            if (existingUser)
+                throw new ConflictException('User with this email or phone already exists');
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await this.userModel.create({
-            name,
-            email,
-            password: hashedPassword,
-        });
+            // ✅ Hash password
+            const hashedPassword = await bcrypt.hash(password, 10);
 
-        return {
-            message: 'Registration successful',
-            user: { id: user._id, name: user.name, email: user.email },
-        };
+            // ✅ Create new user
+            const user = await this.userModel.create({
+                name,
+                email,
+                phone,
+                password: hashedPassword,
+                payday,
+            });
+
+            // ✅ Return response
+            return {
+                message: 'Registration successful',
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    phone: user.phone,
+                },
+            };
+        } catch (error) {
+            console.error('❌ Registration Error:', error);
+            throw new InternalServerErrorException(error.message);
+        }
     }
 
     async login(loginDto: LoginAuthDto) {
-        const { email, password } = loginDto;
+        try {
+            const { email, password } = loginDto;
 
-        const user = await this.userModel.findOne({ email });
-        if (!user) throw new UnauthorizedException('Invalid credentials');
+            const user = await this.userModel.findOne({ email });
+            if (!user) throw new UnauthorizedException('Invalid credentials');
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) throw new UnauthorizedException('Invalid credentials');
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
-        const payload = { sub: user._id, email: user.email, role: user.role };
-        const token = this.jwtService.sign(payload);
+            const payload = { sub: user._id, email: user.email, role: user.role };
+            const token = this.jwtService.sign(payload);
 
-        return {
-            message: 'Login successful',
-            access_token: token,
-        };
+            return {
+                message: 'Login successful',
+                access_token: token,
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                },
+            };
+        } catch (error) {
+            console.error('❌ Login Error:', error);
+            throw new InternalServerErrorException(error.message);
+        }
     }
 }
