@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsNumber, IsOptional } from 'class-validator';
 
 export class RegisterAuthDto {
     @IsString()
@@ -9,14 +9,14 @@ export class RegisterAuthDto {
     email: string;
 
     @IsString()
-    @MinLength(6)
-    password: string;
-
-    @IsString()
     @IsNotEmpty()
     phone: string;
 
-    @IsOptional()
     @IsString()
-    payday?: string; // Optional: you can change this to Date if needed
+    @MinLength(6)
+    password: string;
+
+    @IsNumber()
+    @IsOptional() // make optional if not everyone has a payday
+    payday?: number;
 }
