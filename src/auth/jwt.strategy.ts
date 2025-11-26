@@ -8,7 +8,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: process.env.JWT_SECRET || 'jamii_secret',
+            // Use the non-null assertion operator (!) to tell TypeScript 
+            // that JWT_SECRET is guaranteed to be a string at runtime,
+            // enforcing our required security configuration.
+            secretOrKey: process.env.JWT_SECRET!,
         });
     }
 
