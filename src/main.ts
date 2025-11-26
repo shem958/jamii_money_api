@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { ValidationPipe } from '@nestjs/common'; // 👈 Added ValidationPipe import
 
 async function bootstrap() {
   dotenv.config();
@@ -17,6 +18,9 @@ async function bootstrap() {
 
   // Apply global prefix
   app.setGlobalPrefix('api');
+
+  // Global validation pipe: Enforce DTO validation rules 👈 ADDED
+  app.useGlobalPipes(new ValidationPipe());
 
   // Global response & exception handling
   app.useGlobalFilters(new AllExceptionsFilter());
