@@ -5,7 +5,11 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Observable, map } from 'rxjs';
-import { ApiResponse } from '../interfaces/response.interface';
+
+export interface ApiResponse<T> {
+  success: true;
+  data: T;
+}
 
 @Injectable()
 export class ResponseInterceptor<T>
@@ -13,19 +17,12 @@ export class ResponseInterceptor<T>
 {
   intercept(
     context: ExecutionContext,
-    next: CallHandler,
+    next: CallHandler<T>,
   ): Observable<ApiResponse<T>> {
-    const ctx = context.switchToHttp();
-    const request = ctx.getRequest();
-
     return next.handle().pipe(
-      map((data) => ({
+      map((data: T) => ({
         success: true,
-        message: data?.message || 'Request successful',
-        data: data?.data ?? data,
-        statusCode: context.switchToHttp().getResponse().statusCode,
-        timestamp: new Date().toISOString(),
-        path: request.url,
+        data,
       })),
     );
   }

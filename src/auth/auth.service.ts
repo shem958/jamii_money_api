@@ -41,6 +41,7 @@ export class AuthService {
         phone,
         password: hashedPassword,
         payday,
+        role: 'user',
       });
 
       return {
@@ -50,13 +51,12 @@ export class AuthService {
           name: user.name,
           email: user.email,
           phone: user.phone,
+          role: user.role,
         },
       };
     } catch (error: unknown) {
       if (error instanceof ConflictException) throw error;
-      const message =
-        error instanceof Error ? error.message : 'Registration failed';
-      throw new InternalServerErrorException(message);
+      throw new InternalServerErrorException('Registration failed');
     }
   }
 
@@ -70,24 +70,25 @@ export class AuthService {
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
-      const payload = { sub: user._id, email: user.email, role: user.role };
-      const token = this.jwtService.sign(payload);
+      const payload = {
+        sub: user._id,
+        email: user.email,
+        role: user.role,
+      };
 
       return {
-        message: 'Login successful',
-        access_token: token,
+        access_token: this.jwtService.sign(payload),
         user: {
           id: user._id,
           name: user.name,
           email: user.email,
-          role: user.role || 'user',
           phone: user.phone,
+          role: user.role,
         },
       };
     } catch (error: unknown) {
       if (error instanceof UnauthorizedException) throw error;
-      const message = error instanceof Error ? error.message : 'Login failed';
-      throw new InternalServerErrorException(message);
+      throw new InternalServerErrorException('Login failed');
     }
   }
 }
