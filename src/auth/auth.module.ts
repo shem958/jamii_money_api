@@ -15,7 +15,7 @@ import { User, UserSchema } from '../users/schemas/user.schema';
     JwtModule.registerAsync({
       imports: [ConfigModule], // Make sure ConfigModule is available
       inject: [ConfigService], // Request the ConfigService instance
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         // Safely retrieve the secret using ConfigService
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: { expiresIn: '7d' },
