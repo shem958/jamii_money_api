@@ -54,9 +54,15 @@ export class AuthService {
           phone: user.phone,
         },
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('❌ Registration Error:', error);
-      throw new InternalServerErrorException(error.message);
+      const message =
+        error instanceof Error
+          ? error.message
+          : typeof error === 'string'
+            ? error
+            : JSON.stringify(error);
+      throw new InternalServerErrorException(message);
     }
   }
 
@@ -83,9 +89,15 @@ export class AuthService {
           role: user.role,
         },
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('❌ Login Error:', error);
-      throw new InternalServerErrorException(error.message);
+      const message =
+        error instanceof Error
+          ? error.message
+          : typeof error === 'string'
+            ? error
+            : JSON.stringify(error);
+      throw new InternalServerErrorException(message);
     }
   }
 }
