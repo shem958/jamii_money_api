@@ -6,10 +6,10 @@ import { Goal, GoalSchema } from './schemas/goal.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Goal.name, schema: GoalSchema }])
+    MongooseModule.forFeature([{ name: Goal.name, schema: GoalSchema }]),
   ],
   providers: [GoalsService],
   controllers: [GoalsController],
-  exports: [GoalsService]
+  exports: [GoalsService],
 })
-export class GoalsModule { }
+export class GoalsModule {}

@@ -26,8 +26,9 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
+      useFactory: (configService: ConfigService) => ({
+        // Ensure there is no space after the comma below
+        uri: configService.get<string>('MONGO_URI'),
       }),
     }),
 

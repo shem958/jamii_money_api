@@ -6,10 +6,12 @@ import { ChamaMember, ChamaMemberSchema } from './schemas/chama-member.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: ChamaMember.name, schema: ChamaMemberSchema }])
+    MongooseModule.forFeature([
+      { name: ChamaMember.name, schema: ChamaMemberSchema },
+    ]),
   ],
   providers: [ChamaMembersService],
   controllers: [ChamaMembersController],
-  exports: [ChamaMembersService]
+  exports: [ChamaMembersService],
 })
-export class ChamaMembersModule { }
+export class ChamaMembersModule {}

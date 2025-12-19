@@ -27,4 +27,4 @@ import { User, UserSchema } from '../users/schemas/user.schema';
   providers: [AuthService, JwtStrategy],
   exports: [JwtStrategy, JwtModule],
 })
-export class AuthModule { }
+export class AuthModule {}

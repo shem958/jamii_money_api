@@ -5,32 +5,45 @@ import { ChamaMember } from './schemas/chama-member.schema';
 
 @Injectable()
 export class ChamaMembersService {
-    constructor(@InjectModel(ChamaMember.name) private readonly memberModel: Model<ChamaMember>) { }
+  constructor(
+    @InjectModel(ChamaMember.name)
+    private readonly memberModel: Model<ChamaMember>,
+  ) {}
 
-    async create(createMemberDto: any) {
-        const member = new this.memberModel(createMemberDto);
-        return await member.save();
-    }
+  async create(createMemberDto: any) {
+    const member = new this.memberModel(createMemberDto);
+    return await member.save();
+  }
 
-    async findAll() {
-        return this.memberModel.find().populate('userId', 'name email').populate('chamaId', 'name');
-    }
+  async findAll() {
+    return this.memberModel
+      .find()
+      .populate('userId', 'name email')
+      .populate('chamaId', 'name');
+  }
 
-    async findOne(id: string) {
-        const member = await this.memberModel.findById(id).populate('userId', 'name email').populate('chamaId', 'name');
-        if (!member) throw new NotFoundException('Chama member not found');
-        return member;
-    }
+  async findOne(id: string) {
+    const member = await this.memberModel
+      .findById(id)
+      .populate('userId', 'name email')
+      .populate('chamaId', 'name');
+    if (!member) throw new NotFoundException('Chama member not found');
+    return member;
+  }
 
-    async update(id: string, updateMemberDto: any) {
-        const updated = await this.memberModel.findByIdAndUpdate(id, updateMemberDto, { new: true });
-        if (!updated) throw new NotFoundException('Chama member not found');
-        return updated;
-    }
+  async update(id: string, updateMemberDto: any) {
+    const updated = await this.memberModel.findByIdAndUpdate(
+      id,
+      updateMemberDto,
+      { new: true },
+    );
+    if (!updated) throw new NotFoundException('Chama member not found');
+    return updated;
+  }
 
-    async remove(id: string) {
-        const deleted = await this.memberModel.findByIdAndDelete(id);
-        if (!deleted) throw new NotFoundException('Chama member not found');
-        return { message: 'Chama member deleted successfully' };
-    }
+  async remove(id: string) {
+    const deleted = await this.memberModel.findByIdAndDelete(id);
+    if (!deleted) throw new NotFoundException('Chama member not found');
+    return { message: 'Chama member deleted successfully' };
+  }
 }

@@ -6,10 +6,10 @@ import { Nudge, NudgeSchema } from './schemas/nudge.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Nudge.name, schema: NudgeSchema }])
+    MongooseModule.forFeature([{ name: Nudge.name, schema: NudgeSchema }]),
   ],
   providers: [NudgesService],
   controllers: [NudgesController],
-  exports: [NudgesService]
+  exports: [NudgesService],
 })
-export class NudgesModule { }
+export class NudgesModule {}

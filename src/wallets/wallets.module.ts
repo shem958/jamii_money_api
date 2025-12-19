@@ -6,10 +6,10 @@ import { Wallet, WalletSchema } from './schemas/wallet.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Wallet.name, schema: WalletSchema }])
+    MongooseModule.forFeature([{ name: Wallet.name, schema: WalletSchema }]),
   ],
   providers: [WalletsService],
   controllers: [WalletsController],
-  exports: [WalletsService]
+  exports: [WalletsService],
 })
-export class WalletsModule { }
+export class WalletsModule {}
