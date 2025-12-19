@@ -3,6 +3,14 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 
+// Define a typed shape for the JWT payload we expect
+interface JwtPayload {
+  sub?: string | number;
+  email?: string;
+  role?: string | string[];
+  [key: string]: unknown;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   // Inject ConfigService in the constructor
@@ -16,8 +24,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
+  validate(payload: JwtPayload) {
     // The payload (decoded JWT content) is returned as the user object for the request
-    return { userId: payload.sub, email: payload.email, role: payload.role };
+    return {
+      userId: payload.sub ? String(payload.sub) : undefined,
+      email: payload.email,
+      role: payload.role,
+    };
   }
 }
