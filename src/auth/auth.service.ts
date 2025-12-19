@@ -23,19 +23,18 @@ export class AuthService {
     try {
       const { name, email, password, phone, payday } = registerDto;
 
-      // ✅ Check for existing user
       const existingUser = await this.userModel.findOne({
         $or: [{ email }, { phone }],
       });
-      if (existingUser)
+
+      if (existingUser) {
         throw new ConflictException(
           'User with this email or phone already exists',
         );
+      }
 
-      // ✅ Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      // ✅ Create new user
       const user = await this.userModel.create({
         name,
         email,
@@ -44,7 +43,6 @@ export class AuthService {
         payday,
       });
 
-      // ✅ Return response
       return {
         message: 'Registration successful',
         user: {
@@ -55,13 +53,9 @@ export class AuthService {
         },
       };
     } catch (error: unknown) {
-      console.error('❌ Registration Error:', error);
+      if (error instanceof ConflictException) throw error;
       const message =
-        error instanceof Error
-          ? error.message
-          : typeof error === 'string'
-            ? error
-            : JSON.stringify(error);
+        error instanceof Error ? error.message : 'Registration failed';
       throw new InternalServerErrorException(message);
     }
   }
@@ -86,17 +80,13 @@ export class AuthService {
           id: user._id,
           name: user.name,
           email: user.email,
-          role: user.role,
+          role: user.role || 'user',
+          phone: user.phone,
         },
       };
     } catch (error: unknown) {
-      console.error('❌ Login Error:', error);
-      const message =
-        error instanceof Error
-          ? error.message
-          : typeof error === 'string'
-            ? error
-            : JSON.stringify(error);
+      if (error instanceof UnauthorizedException) throw error;
+      const message = error instanceof Error ? error.message : 'Login failed';
       throw new InternalServerErrorException(message);
     }
   }

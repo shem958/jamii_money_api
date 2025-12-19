@@ -20,7 +20,26 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const res = exception.getResponse();
-      message = (res as any)?.message || exception.message;
+
+      if (typeof res === 'string') {
+        message = res;
+      } else if (res && typeof res === 'object') {
+        const r = res as Record<string, unknown>;
+        const maybeMessage = r.message;
+        if (Array.isArray(maybeMessage)) {
+          message = maybeMessage
+            .filter((m) => typeof m === 'string')
+            .join(', ');
+        } else if (typeof maybeMessage === 'string') {
+          message = maybeMessage;
+        } else if (typeof r.error === 'string') {
+          message = r.error;
+        } else {
+          message = exception.message;
+        }
+      } else {
+        message = exception.message;
+      }
     } else if (exception instanceof Error) {
       message = exception.message;
     }

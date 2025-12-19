@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ChamaMember } from './schemas/chama-member.schema';
+import { CreateChamaMemberDto } from './dto/create-chama-member.dto';
 
 @Injectable()
 export class ChamaMembersService {
@@ -10,9 +11,9 @@ export class ChamaMembersService {
     private readonly memberModel: Model<ChamaMember>,
   ) {}
 
-  async create(createMemberDto: any) {
+  async create(createMemberDto: CreateChamaMemberDto) {
     const member = new this.memberModel(createMemberDto);
-    return await member.save();
+    return member.save();
   }
 
   async findAll() {
@@ -31,7 +32,7 @@ export class ChamaMembersService {
     return member;
   }
 
-  async update(id: string, updateMemberDto: any) {
+  async update(id: string, updateMemberDto: Partial<CreateChamaMemberDto>) {
     const updated = await this.memberModel.findByIdAndUpdate(
       id,
       updateMemberDto,
