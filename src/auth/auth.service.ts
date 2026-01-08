@@ -17,7 +17,7 @@ export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(registerDto: RegisterAuthDto) {
     try {
@@ -28,9 +28,7 @@ export class AuthService {
       });
 
       if (existingUser) {
-        throw new ConflictException(
-          'User with this email or phone already exists',
-        );
+        throw new ConflictException('User with this email or phone already exists');
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -41,7 +39,7 @@ export class AuthService {
         phone,
         password: hashedPassword,
         payday,
-        role: 'user',
+        role: 'user', // Default role
       });
 
       return {
@@ -83,7 +81,7 @@ export class AuthService {
           name: user.name,
           email: user.email,
           phone: user.phone,
-          role: user.role,
+          role: user.role || 'user',
         },
       };
     } catch (error: unknown) {
